@@ -17,13 +17,10 @@ module "ota_s3_bucket" {
     error_document = "error.html"
   }
 
-  block_public_acls       = true
-  block_public_policy     = false
-  ignore_public_acls      = true
+  block_public_acls       = false
+  block_public_policy     = false # Kept false to avoid conflicts, though we rely on ACLs now
+  ignore_public_acls      = false
   restrict_public_buckets = false
-
-  attach_policy = true
-  policy        = data.aws_iam_policy_document.ota_bucket_public_files.json
 
   tags = local.common_tags
 }
@@ -34,6 +31,7 @@ resource "aws_s3_object" "index" {
   source       = "${path.module}/www/index.html"
   content_type = "text/html"
   etag         = filemd5("${path.module}/www/index.html")
+  acl          = "public-read"
 }
 
 resource "aws_s3_object" "error" {
@@ -42,24 +40,7 @@ resource "aws_s3_object" "error" {
   source       = "${path.module}/www/error.html"
   content_type = "text/html"
   etag         = filemd5("${path.module}/www/error.html")
-}
-
-data "aws_iam_policy_document" "ota_bucket_public_files" {
-  statement {
-    sid    = "PublicReadGetStaticFiles"
-    effect = "Allow"
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    actions = [
-      "s3:GetObject",
-    ]
-    resources = [
-      "${module.ota_s3_bucket.s3_bucket_arn}/index.html",
-      "${module.ota_s3_bucket.s3_bucket_arn}/error.html"
-    ]
-  }
+  acl          = "public-read"
 }
 
 module "ota_iam_user" {
