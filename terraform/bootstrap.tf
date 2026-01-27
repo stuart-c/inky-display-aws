@@ -10,7 +10,8 @@ locals {
   account_id  = data.aws_caller_identity.current.account_id
   repo_name   = data.external.git_details.result.name
   repo_url    = data.external.git_details.result.url
-  bucket_name = "${local.account_id}-${local.repo_name}-state"
+  prefix_name = "${local.account_id}-${local.repo_name}"
+  bucket_name = "${local.prefix_name}-state"
 
   common_tags = {
     Repository = local.repo_url

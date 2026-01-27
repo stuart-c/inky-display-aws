@@ -14,15 +14,25 @@ module "iam_user" {
 
 data "aws_iam_policy_document" "terraform_base" {
   statement {
-    sid = "AllowS3Read"
+    sid = "AllowS3ReadBucket"
     actions = [
       "s3:ListBucket",
-      "s3:Get*"
+      "s3:GetBucket*"
     ]
     effect = "Allow"
     resources = [
-      module.s3_bucket.s3_bucket_arn,
-      "${module.s3_bucket.s3_bucket_arn}/*"
+      "arn:aws:s3:::${local.prefix_name}-*"
+    ]
+  }
+
+  statement {
+    sid = "AllowS3ReadObject"
+    actions = [
+      "s3:GetObject*"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${local.prefix_name}-*/*"
     ]
   }
 
@@ -48,6 +58,8 @@ data "aws_iam_policy_document" "terraform_base" {
     resources = ["*"]
   }
 
+
+
   statement {
     sid = "AllowIAMRead"
     actions = [
@@ -56,36 +68,24 @@ data "aws_iam_policy_document" "terraform_base" {
     ]
     effect = "Allow"
     resources = [
-      module.iam_user.iam_user_arn,
-      module.iam_user_apply.iam_user_arn,
-      "arn:aws:iam::${local.account_id}:policy/terraform-apply-policy"
+      "arn:aws:iam::${local.account_id}:user/${local.prefix_name}-*",
+      "arn:aws:iam::${local.account_id}:policy/${local.prefix_name}-*"
     ]
   }
 
   statement {
-    sid = "AllowOTABucketRead"
+    sid = "AllowLambdaRead"
     actions = [
-      "s3:ListBucket",
-      "s3:Get*"
+      "lambda:Get*",
+      "lambda:List*"
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${local.account_id}-inky-display-ota",
-      "arn:aws:s3:::${local.account_id}-inky-display-ota/*"
+      "arn:aws:lambda:*:*:function:${local.prefix_name}-*"
     ]
   }
 
-  statement {
-    sid = "AllowOTAIAMUserRead"
-    actions = [
-      "iam:Get*",
-      "iam:List*"
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:iam::${local.account_id}:user/ota-upload-user"
-    ]
-  }
+
 }
 
 resource "aws_iam_user_policy" "terraform_state_policy" {
@@ -111,16 +111,24 @@ module "iam_user_apply" {
 
 data "aws_iam_policy_document" "terraform_apply" {
   statement {
-    sid = "AllowS3Write"
+    sid = "AllowS3WriteBucket"
     actions = [
-      "s3:PutObject",
-      "s3:DeleteObject",
-      "s3:PutBucketTagging"
+      "s3:*"
     ]
     effect = "Allow"
     resources = [
-      module.s3_bucket.s3_bucket_arn,
-      "${module.s3_bucket.s3_bucket_arn}/*"
+      "arn:aws:s3:::${local.prefix_name}-*"
+    ]
+  }
+
+  statement {
+    sid = "AllowS3WriteObject"
+    actions = [
+      "s3:*"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${local.prefix_name}-*/*"
     ]
   }
 
@@ -131,8 +139,18 @@ data "aws_iam_policy_document" "terraform_apply" {
     ]
     effect = "Allow"
     resources = [
-      module.iam_user.iam_user_arn,
-      module.iam_user_apply.iam_user_arn
+      "arn:aws:iam::${local.account_id}:user/${local.prefix_name}-*"
+    ]
+  }
+
+  statement {
+    sid = "AllowLambdaWrite"
+    actions = [
+      "lambda:*"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:lambda:*:*:function:${local.prefix_name}-*"
     ]
   }
 
@@ -148,50 +166,7 @@ data "aws_iam_policy_document" "terraform_apply" {
     ]
   }
 
-  statement {
-    sid = "AllowOTABucket"
-    actions = [
-      "s3:CreateBucket",
-      "s3:DeleteBucket",
-      "s3:PutBucket*",
-      "s3:Get*",
-      "s3:ListBucket",
-      "s3:PutLifecycleConfiguration",
-      "s3:PutEncryptionConfiguration",
-      "s3:PutObject",
-      "s3:PutObjectAcl",
-      "s3:DeleteObject"
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:s3:::${local.account_id}-inky-display-ota",
-      "arn:aws:s3:::${local.account_id}-inky-display-ota/*"
-    ]
-  }
 
-  statement {
-    sid = "AllowOTAIAMUser"
-    actions = [
-      "iam:CreateUser",
-      "iam:DeleteUser",
-      "iam:GetUser",
-      "iam:ListUsers",
-      "iam:UpdateUser",
-      "iam:CreateAccessKey",
-      "iam:DeleteAccessKey",
-      "iam:GetAccessKey",
-      "iam:ListAccessKeys",
-      "iam:PutUserPolicy",
-      "iam:DeleteUserPolicy",
-      "iam:GetUserPolicy",
-      "iam:ListUserPolicies",
-      "iam:TagUser"
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:iam::${local.account_id}:user/ota-upload-user"
-    ]
-  }
 }
 
 data "aws_iam_policy_document" "terraform_apply_combined" {
@@ -202,7 +177,7 @@ data "aws_iam_policy_document" "terraform_apply_combined" {
 }
 
 resource "aws_iam_policy" "terraform_apply_policy" {
-  name   = "terraform-apply-policy"
+  name   = "${local.prefix_name}-apply-policy"
   policy = data.aws_iam_policy_document.terraform_apply_combined.json
 }
 
