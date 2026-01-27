@@ -25,19 +25,28 @@ module "ota_s3_bucket" {
   tags = local.common_tags
 }
 
-resource "aws_s3_object" "index" {
+  tags = local.common_tags
+}
+
+module "object_index" {
+  source  = "terraform-aws-modules/s3-bucket/aws//modules/object"
+  version = "~> 3.0"
+
   bucket       = module.ota_s3_bucket.s3_bucket_id
   key          = "index.html"
-  source       = "${path.module}/www/index.html"
+  file_source  = "${path.module}/www/index.html"
   content_type = "text/html"
   etag         = filemd5("${path.module}/www/index.html")
   acl          = "public-read"
 }
 
-resource "aws_s3_object" "error" {
+module "object_error" {
+  source  = "terraform-aws-modules/s3-bucket/aws//modules/object"
+  version = "~> 3.0"
+
   bucket       = module.ota_s3_bucket.s3_bucket_id
   key          = "error.html"
-  source       = "${path.module}/www/error.html"
+  file_source  = "${path.module}/www/error.html"
   content_type = "text/html"
   etag         = filemd5("${path.module}/www/error.html")
   acl          = "public-read"
