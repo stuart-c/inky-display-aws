@@ -1,8 +1,10 @@
 data "aws_caller_identity" "current" {}
 
+
 data "external" "git_details" {
   program = ["${path.module}/scripts/get_repo_details.sh"]
 }
+
 
 locals {
   account_id  = data.aws_caller_identity.current.account_id
@@ -109,4 +111,16 @@ resource "aws_iam_user_policy" "terraform_state_policy" {
   user = module.iam_user.iam_user_name
 
   policy = data.aws_iam_policy_document.terraform_state_policy.json
+}
+
+resource "github_actions_secret" "aws_access_key_id" {
+  repository      = local.repo_name
+  secret_name     = "AWS_ACCESS_KEY_ID"
+  plaintext_value = module.iam_user.iam_access_key_id
+}
+
+resource "github_actions_secret" "aws_secret_access_key" {
+  repository      = local.repo_name
+  secret_name     = "AWS_SECRET_ACCESS_KEY"
+  plaintext_value = module.iam_user.iam_access_key_secret
 }
