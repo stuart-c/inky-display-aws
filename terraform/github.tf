@@ -61,6 +61,31 @@ data "aws_iam_policy_document" "terraform_base" {
       "arn:aws:iam::${local.account_id}:policy/terraform-apply-policy"
     ]
   }
+
+  statement {
+    sid = "AllowOTABucketRead"
+    actions = [
+      "s3:ListBucket",
+      "s3:Get*"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${local.account_id}-inky-display-ota",
+      "arn:aws:s3:::${local.account_id}-inky-display-ota/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowOTAIAMUserRead"
+    actions = [
+      "iam:Get*",
+      "iam:List*"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:iam::${local.account_id}:user/ota-upload-user"
+    ]
+  }
 }
 
 resource "aws_iam_user_policy" "terraform_state_policy" {
