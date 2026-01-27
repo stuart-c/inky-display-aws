@@ -175,11 +175,14 @@ data "aws_iam_policy_document" "terraform_apply_combined" {
   ]
 }
 
-resource "aws_iam_user_policy" "terraform_apply_policy" {
-  name = "terraform-apply-policy"
-  user = module.iam_user_apply.iam_user_name
-
+resource "aws_iam_policy" "terraform_apply_policy" {
+  name   = "terraform-apply-policy"
   policy = data.aws_iam_policy_document.terraform_apply_combined.json
+}
+
+resource "aws_iam_user_policy_attachment" "terraform_apply_policy_attachment" {
+  user       = module.iam_user_apply.iam_user_name
+  policy_arn = aws_iam_policy.terraform_apply_policy.arn
 }
 
 resource "github_actions_secret" "aws_access_key_id" {
