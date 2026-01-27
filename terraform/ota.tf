@@ -25,9 +25,6 @@ module "ota_s3_bucket" {
   tags = local.common_tags
 }
 
-  tags = local.common_tags
-}
-
 module "object_index" {
   source  = "terraform-aws-modules/s3-bucket/aws//modules/object"
   version = "~> 3.0"
