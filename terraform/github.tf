@@ -131,7 +131,10 @@ data "aws_iam_policy_document" "terraform_apply" {
       "s3:GetBucket*",
       "s3:ListBucket",
       "s3:PutLifecycleConfiguration",
-      "s3:PutEncryptionConfiguration"
+      "s3:PutEncryptionConfiguration",
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:DeleteObject"
     ]
     effect = "Allow"
     resources = [
