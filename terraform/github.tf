@@ -126,7 +126,7 @@ data "aws_iam_policy_document" "terraform_base" {
       # I will just put the user prefix for now.
     ]
   }
- 
+
   statement {
     sid = "AllowLambdaRead"
     actions = [
