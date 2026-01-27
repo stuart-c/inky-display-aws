@@ -69,8 +69,7 @@ data "aws_iam_policy_document" "terraform_base" {
     effect = "Allow"
     resources = [
       "arn:aws:iam::${local.account_id}:user/${local.prefix_name}-*",
-      "arn:aws:iam::${local.account_id}:policy/${local.prefix_name}-*",
-      "arn:aws:iam::${local.account_id}:policy/terraform-apply-policy"
+      "arn:aws:iam::${local.account_id}:policy/${local.prefix_name}-*"
     ]
   }
 
@@ -141,8 +140,7 @@ data "aws_iam_policy_document" "terraform_apply" {
     effect = "Allow"
     resources = [
       "arn:aws:iam::${local.account_id}:user/${local.prefix_name}-*",
-      "arn:aws:iam::${local.account_id}:policy/${local.prefix_name}-*",
-      "arn:aws:iam::${local.account_id}:policy/terraform-apply-policy"
+      "arn:aws:iam::${local.account_id}:policy/${local.prefix_name}-*"
     ]
   }
 
