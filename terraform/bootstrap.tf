@@ -5,9 +5,6 @@ data "external" "git_details" {
   program = ["${path.module}/scripts/get_repo_details.sh"]
 }
 
-provider "github" {
-  # Configuration options
-}
 
 locals {
   account_id  = data.aws_caller_identity.current.account_id
