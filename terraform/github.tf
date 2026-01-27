@@ -88,7 +88,8 @@ data "aws_iam_policy_document" "terraform_apply" {
     sid = "AllowS3Write"
     actions = [
       "s3:PutObject",
-      "s3:DeleteObject"
+      "s3:DeleteObject",
+      "s3:PutBucketTagging"
     ]
     effect = "Allow"
     resources = [
@@ -106,6 +107,18 @@ data "aws_iam_policy_document" "terraform_apply" {
     resources = [
       module.iam_user.iam_user_arn,
       module.iam_user_apply.iam_user_arn
+    ]
+  }
+
+  statement {
+    sid = "AllowDynamoDBWrite"
+    actions = [
+      "dynamodb:TagResource",
+      "dynamodb:UntagResource"
+    ]
+    effect = "Allow"
+    resources = [
+      module.dynamodb_table.dynamodb_table_arn
     ]
   }
 }
