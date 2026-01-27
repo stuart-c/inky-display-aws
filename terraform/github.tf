@@ -21,7 +21,8 @@ data "aws_iam_policy_document" "terraform_base" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${local.prefix_name}-*"
+      "arn:aws:s3:::${local.prefix_name}-*",
+      "arn:aws:s3:::${local.account_id}-inky-display-ota"
     ]
   }
 
@@ -32,7 +33,8 @@ data "aws_iam_policy_document" "terraform_base" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${local.prefix_name}-*/*"
+      "arn:aws:s3:::${local.prefix_name}-*/*",
+      "arn:aws:s3:::${local.account_id}-inky-display-ota/*"
     ]
   }
 
@@ -117,7 +119,8 @@ data "aws_iam_policy_document" "terraform_apply" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${local.prefix_name}-*"
+      "arn:aws:s3:::${local.prefix_name}-*",
+      "arn:aws:s3:::${local.account_id}-inky-display-ota"
     ]
   }
 
@@ -128,7 +131,8 @@ data "aws_iam_policy_document" "terraform_apply" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${local.prefix_name}-*/*"
+      "arn:aws:s3:::${local.prefix_name}-*/*",
+      "arn:aws:s3:::${local.account_id}-inky-display-ota/*"
     ]
   }
 
