@@ -121,6 +121,51 @@ data "aws_iam_policy_document" "terraform_apply" {
       module.dynamodb_table.dynamodb_table_arn
     ]
   }
+
+  statement {
+    sid = "AllowOTABucket"
+    actions = [
+      "s3:CreateBucket",
+      "s3:DeleteBucket",
+      "s3:PutBucket*",
+      "s3:GetBucket*",
+      "s3:ListBucket",
+      "s3:PutLifecycleConfiguration",
+      "s3:PutEncryptionConfiguration",
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:DeleteObject"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${local.account_id}-inky-display-ota",
+      "arn:aws:s3:::${local.account_id}-inky-display-ota/*"
+    ]
+  }
+
+  statement {
+    sid = "AllowOTAIAMUser"
+    actions = [
+      "iam:CreateUser",
+      "iam:DeleteUser",
+      "iam:GetUser",
+      "iam:ListUsers",
+      "iam:UpdateUser",
+      "iam:CreateAccessKey",
+      "iam:DeleteAccessKey",
+      "iam:GetAccessKey",
+      "iam:ListAccessKeys",
+      "iam:PutUserPolicy",
+      "iam:DeleteUserPolicy",
+      "iam:GetUserPolicy",
+      "iam:ListUserPolicies",
+      "iam:TagUser"
+    ]
+    effect = "Allow"
+    resources = [
+      module.ota_iam_user.iam_user_arn
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "terraform_apply_combined" {
