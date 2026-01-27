@@ -3,7 +3,7 @@ module "ota_s3_bucket" {
   version = "~> 3.0"
 
   bucket = "${local.account_id}-inky-display-ota"
-  acl    = "public-read"
+  acl    = "private"
 
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
@@ -17,32 +17,12 @@ module "ota_s3_bucket" {
     error_document = "error.html"
   }
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-
-  attach_policy = true
-  policy        = data.aws_iam_policy_document.ota_bucket_public_read.json
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   tags = local.common_tags
-}
-
-data "aws_iam_policy_document" "ota_bucket_public_read" {
-  statement {
-    sid    = "PublicReadGetObject"
-    effect = "Allow"
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    actions = [
-      "s3:GetObject",
-    ]
-    resources = [
-      "arn:aws:s3:::${local.account_id}-inky-display-ota/*",
-    ]
-  }
 }
 
 module "ota_iam_user" {
