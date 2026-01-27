@@ -99,3 +99,15 @@ resource "github_actions_secret" "ota_aws_secret_access_key" {
   secret_name     = "AWS_SECRET_ACCESS_KEY"
   plaintext_value = module.ota_iam_user.iam_access_key_secret
 }
+
+resource "github_actions_secret" "ota_url" {
+  repository      = "inky-display"
+  secret_name     = "OTA_URL"
+  plaintext_value = module.ota_s3_bucket.s3_bucket_website_endpoint
+}
+
+resource "github_actions_secret" "ota_bucket" {
+  repository      = "inky-display"
+  secret_name     = "OTA_BUCKET"
+  plaintext_value = module.ota_s3_bucket.s3_bucket_id
+}
