@@ -18,7 +18,7 @@ locals {
 
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = ">= 3.0"
+  version = "~> 3.0"
 
   bucket = local.bucket_name
   acl    = "private"
@@ -48,7 +48,7 @@ module "s3_bucket" {
 
 module "dynamodb_table" {
   source  = "terraform-aws-modules/dynamodb-table/aws"
-  version = ">= 3.0"
+  version = "~> 3.0"
 
   name     = "${local.bucket_name}-lock"
   hash_key = "LockID"
@@ -65,7 +65,7 @@ module "dynamodb_table" {
 
 module "iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version = ">= 5.0"
+  version = "~> 5.0"
 
   name = "${local.repo_name}-terraform-state-user"
 
