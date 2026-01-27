@@ -67,7 +67,7 @@ module "iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "~> 5.0"
 
-  name = "${local.repo_name}-terraform-state-user"
+  name = "${local.bucket_name}-user"
 
   create_iam_access_key         = true
   create_iam_user_login_profile = false
@@ -77,36 +77,36 @@ module "iam_user" {
   tags = local.common_tags
 }
 
+data "aws_iam_policy_document" "terraform_state_policy" {
+  statement {
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketVersioning",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+    effect = "Allow"
+    resources = [
+      module.s3_bucket.s3_bucket_arn,
+      "${module.s3_bucket.s3_bucket_arn}/*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem"
+    ]
+    effect    = "Allow"
+    resources = [module.dynamodb_table.dynamodb_table_arn]
+  }
+}
+
 resource "aws_iam_user_policy" "terraform_state_policy" {
   name = "terraform-state-policy"
   user = module.iam_user.iam_user_name
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:ListBucket",
-          "s3:GetBucketVersioning",
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
-        ]
-        Effect = "Allow"
-        Resource = [
-          module.s3_bucket.s3_bucket_arn,
-          "${module.s3_bucket.s3_bucket_arn}/*"
-        ]
-      },
-      {
-        Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem"
-        ]
-        Effect   = "Allow"
-        Resource = module.dynamodb_table.dynamodb_table_arn
-      }
-    ]
-  })
+  policy = data.aws_iam_policy_document.terraform_state_policy.json
 }
