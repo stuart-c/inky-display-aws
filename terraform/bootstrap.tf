@@ -96,6 +96,7 @@ data "aws_iam_policy_document" "terraform_state_policy" {
 
   statement {
     actions = [
+      "dynamodb:List*",
       "dynamodb:Get*",
       "dynamodb:PutItem",
       "dynamodb:DeleteItem",
