@@ -2,7 +2,7 @@ module "ota_s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 3.0"
 
-  bucket = "${local.account_id}-inky-display-ota"
+  bucket = "${local.prefix_name}-ota"
   acl    = "private"
 
   control_object_ownership = true
