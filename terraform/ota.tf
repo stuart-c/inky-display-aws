@@ -53,7 +53,7 @@ module "ota_iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "~> 5.0"
 
-  name = "${local.account_id}-${local.repo_name}-ota-upload"
+  name = "${local.prefix_name}-ota-upload"
 
   create_iam_access_key         = true
   create_iam_user_login_profile = false
