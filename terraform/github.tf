@@ -57,7 +57,8 @@ data "aws_iam_policy_document" "terraform_base" {
     effect = "Allow"
     resources = [
       module.iam_user.iam_user_arn,
-      module.iam_user_apply.iam_user_arn
+      module.iam_user_apply.iam_user_arn,
+      "arn:aws:iam::${local.account_id}:policy/terraform-apply-policy"
     ]
   }
 }
