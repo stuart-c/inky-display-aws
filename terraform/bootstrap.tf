@@ -88,7 +88,8 @@ data "aws_iam_policy_document" "terraform_state_policy" {
       "s3:PutObject",
       "s3:DeleteObject",
       "s3:GetBucketPolicy",
-      "s3:GetBucketAcl"
+      "s3:GetBucketAcl",
+      "s3:GetBucketCORS"
     ]
     effect = "Allow"
     resources = [
@@ -103,7 +104,8 @@ data "aws_iam_policy_document" "terraform_state_policy" {
       "dynamodb:PutItem",
       "dynamodb:DeleteItem",
       "dynamodb:DescribeTable",
-      "dynamodb:DescribeContinuousBackups"
+      "dynamodb:DescribeContinuousBackups",
+      "dynamodb:DescribeTimeToLive"
     ]
     effect    = "Allow"
     resources = [module.dynamodb_table.dynamodb_table_arn]
