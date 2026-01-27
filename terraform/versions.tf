@@ -11,8 +11,16 @@ terraform {
       version = "~> 2.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "485836911138-inky-display-aws-state"
+    key            = "terraform.tfstate"
+    region         = "eu-west-1"
+    dynamodb_table = "485836911138-inky-display-aws-state-lock"
+    encrypt        = true
+  }
 }
 
 provider "aws" {
-  region = "eu-west-2"
+  region = "eu-west-1"
 }
