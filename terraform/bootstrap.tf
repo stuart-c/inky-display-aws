@@ -166,7 +166,7 @@ data "aws_iam_policy_document" "terraform_apply" {
     actions = [
       "iam:*"
     ]
-    effect    = "Allow"
+    effect = "Allow"
     resources = [
       module.iam_user.iam_user_arn,
       module.iam_user_apply.iam_user_arn
