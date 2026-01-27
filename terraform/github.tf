@@ -13,11 +13,10 @@ module "iam_user" {
 }
 
 data "aws_iam_policy_document" "terraform_base" {
-  statement {
     sid = "AllowS3ReadBucket"
     actions = [
       "s3:ListBucket",
-      "s3:GetBucket*"
+      "s3:Get*"
     ]
     effect = "Allow"
     resources = [
