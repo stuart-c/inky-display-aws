@@ -87,7 +87,8 @@ data "aws_iam_policy_document" "terraform_state_policy" {
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject",
-      "s3:GetBucketPolicy"
+      "s3:GetBucketPolicy",
+      "s3:GetBucketAcl"
     ]
     effect = "Allow"
     resources = [
@@ -101,7 +102,8 @@ data "aws_iam_policy_document" "terraform_state_policy" {
       "dynamodb:GetItem",
       "dynamodb:PutItem",
       "dynamodb:DeleteItem",
-      "dynamodb:DescribeTable"
+      "dynamodb:DescribeTable",
+      "dynamodb:DescribeContinuousBackups"
     ]
     effect    = "Allow"
     resources = [module.dynamodb_table.dynamodb_table_arn]
@@ -117,7 +119,8 @@ data "aws_iam_policy_document" "terraform_state_policy" {
 
   statement {
     actions = [
-      "iam:GetUser"
+      "iam:GetUser",
+      "iam:ListAccessKeys"
     ]
     effect    = "Allow"
     resources = [module.iam_user.iam_user_arn]
