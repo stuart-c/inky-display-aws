@@ -162,8 +162,7 @@ data "aws_iam_policy_document" "terraform_apply" {
       "iam:TagUser"
     ]
     effect = "Allow"
-    resources = [
-      module.ota_iam_user.iam_user_arn
+      "arn:aws:iam::${local.account_id}:user/ota-upload-user"
     ]
   }
 }
