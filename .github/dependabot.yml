@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "terraform"
-    directory: "/" # Location of your Terraform configuration
+    directory: "/terraform" # Location of your Terraform configuration
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
