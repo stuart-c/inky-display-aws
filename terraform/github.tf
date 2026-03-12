@@ -1,6 +1,6 @@
 module "iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version = "~> 5.0"
+  version = "~> 6.4"
 
   name = "${local.bucket_name}-user"
 
@@ -97,7 +97,7 @@ resource "aws_iam_user_policy" "terraform_state_policy" {
 
 module "iam_user_apply" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version = "~> 5.0"
+  version = "~> 6.4"
 
   name = "${local.bucket_name}-user-apply"
 
