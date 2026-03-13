@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+permissions:
+  id-token: write # Allows requesting the OIDC JWT token
+  contents: read  # Required by actions/checkout
+
 jobs:
   terraform:
     name: Terraform
@@ -26,11 +30,10 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials for 'plan'
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_PLAN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
@@ -42,9 +45,13 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false
 
+      - name: Configure AWS credentials for 'apply'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_APPLY }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_APPLY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_APPLY }}
         run: terraform apply -auto-approve -input=false
