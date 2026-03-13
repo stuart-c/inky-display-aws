@@ -55,8 +55,8 @@ module "ota_iam_user" {
 
   name = "${local.prefix_name}-ota-upload"
 
-  create_iam_access_key         = true
-  create_iam_user_login_profile = false
+  create_access_key    = true
+  create_login_profile = false
 
   force_destroy = true
 
@@ -82,7 +82,7 @@ data "aws_iam_policy_document" "ota_upload_policy" {
 
 resource "aws_iam_user_policy" "ota_upload_user_policy" {
   name = "ota-upload-policy"
-  user = module.ota_iam_user.iam_user_name
+  user = module.ota_iam_user.name
 
   policy = data.aws_iam_policy_document.ota_upload_policy.json
 }
@@ -91,13 +91,13 @@ resource "aws_iam_user_policy" "ota_upload_user_policy" {
 resource "github_actions_secret" "ota_aws_access_key_id" {
   repository      = "inky-display"
   secret_name     = "AWS_ACCESS_KEY_ID"
-  plaintext_value = module.ota_iam_user.iam_access_key_id
+  plaintext_value = module.ota_iam_user.access_key_id
 }
 
 resource "github_actions_secret" "ota_aws_secret_access_key" {
   repository      = "inky-display"
   secret_name     = "AWS_SECRET_ACCESS_KEY"
-  plaintext_value = module.ota_iam_user.iam_access_key_secret
+  plaintext_value = module.ota_iam_user.access_key_secret
 }
 
 resource "github_actions_secret" "ota_url" {

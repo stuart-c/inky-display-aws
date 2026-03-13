@@ -4,8 +4,8 @@ module "iam_user" {
 
   name = "${local.bucket_name}-user"
 
-  create_iam_access_key         = true
-  create_iam_user_login_profile = false
+  create_access_key    = true
+  create_login_profile = false
 
   force_destroy = true
 
@@ -84,13 +84,11 @@ data "aws_iam_policy_document" "terraform_base" {
       "arn:aws:lambda:*:*:function:${local.prefix_name}-*"
     ]
   }
-
-
 }
 
 resource "aws_iam_user_policy" "terraform_state_policy" {
   name = "terraform-state-policy"
-  user = module.iam_user.iam_user_name
+  user = module.iam_user.name
 
   policy = data.aws_iam_policy_document.terraform_base.json
 }
@@ -101,8 +99,8 @@ module "iam_user_apply" {
 
   name = "${local.bucket_name}-user-apply"
 
-  create_iam_access_key         = true
-  create_iam_user_login_profile = false
+  create_access_key    = true
+  create_login_profile = false
 
   force_destroy = true
 
@@ -183,30 +181,30 @@ resource "aws_iam_policy" "terraform_apply_policy" {
 }
 
 resource "aws_iam_user_policy_attachment" "terraform_apply_policy_attachment" {
-  user       = module.iam_user_apply.iam_user_name
+  user       = module.iam_user_apply.name
   policy_arn = aws_iam_policy.terraform_apply_policy.arn
 }
 
 resource "github_actions_secret" "aws_access_key_id" {
   repository      = local.repo_name
   secret_name     = "AWS_ACCESS_KEY_ID"
-  plaintext_value = module.iam_user.iam_access_key_id
+  plaintext_value = module.iam_user.access_key_id
 }
 
 resource "github_actions_secret" "aws_secret_access_key" {
   repository      = local.repo_name
   secret_name     = "AWS_SECRET_ACCESS_KEY"
-  plaintext_value = module.iam_user.iam_access_key_secret
+  plaintext_value = module.iam_user.access_key_secret
 }
 
 resource "github_actions_secret" "aws_access_key_id_apply" {
   repository      = local.repo_name
   secret_name     = "AWS_ACCESS_KEY_ID_APPLY"
-  plaintext_value = module.iam_user_apply.iam_access_key_id
+  plaintext_value = module.iam_user_apply.access_key_id
 }
 
 resource "github_actions_secret" "aws_secret_access_key_apply" {
   repository      = local.repo_name
   secret_name     = "AWS_SECRET_ACCESS_KEY_APPLY"
-  plaintext_value = module.iam_user_apply.iam_access_key_secret
+  plaintext_value = module.iam_user_apply.access_key_secret
 }
