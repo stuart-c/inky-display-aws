@@ -15,7 +15,7 @@ jobs:
     name: Terraform
     runs-on: ubuntu-latest
     env:
-      AWS_REGION: eu-west-1
+      AWS_REGION: eu-west-2
       GITHUB_TOKEN: ${{ secrets.GH_PAT }}
     defaults:
       run:
