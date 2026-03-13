@@ -35,6 +35,8 @@ module "object_index" {
   content_type = "text/html"
   etag         = filemd5("${path.module}/www/index.html")
   acl          = "public-read"
+
+  depends_on = [module.ota_s3_bucket]
 }
 
 module "object_error" {
@@ -47,6 +49,8 @@ module "object_error" {
   content_type = "text/html"
   etag         = filemd5("${path.module}/www/error.html")
   acl          = "public-read"
+
+  depends_on = [module.ota_s3_bucket]
 }
 
 module "ota_iam_user" {
