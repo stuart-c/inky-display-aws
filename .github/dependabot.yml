@@ -1,10 +1,21 @@
 version: 2
 updates:
+  # Terraform updates
   - package-ecosystem: "terraform"
-    directory: "/terraform" # Location of your Terraform configuration
+    directory: "/terraform"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
     labels:
       - "terraform"
       - "dependencies"
+
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions-updates:
+        patterns:
+          - "*" # Groups all action updates into a single PR to reduce noise
