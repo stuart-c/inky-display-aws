@@ -1,6 +1,6 @@
 module "ota_s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.0"
+  version = "~> 5.10"
 
   bucket = "${local.prefix_name}-ota"
   acl    = "private"
@@ -27,7 +27,7 @@ module "ota_s3_bucket" {
 
 module "object_index" {
   source  = "terraform-aws-modules/s3-bucket/aws//modules/object"
-  version = "~> 3.0"
+  version = "~> 5.10"
 
   bucket       = module.ota_s3_bucket.s3_bucket_id
   key          = "index.html"
@@ -39,7 +39,7 @@ module "object_index" {
 
 module "object_error" {
   source  = "terraform-aws-modules/s3-bucket/aws//modules/object"
-  version = "~> 3.0"
+  version = "~> 5.10"
 
   bucket       = module.ota_s3_bucket.s3_bucket_id
   key          = "error.html"
