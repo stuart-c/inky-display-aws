@@ -51,7 +51,7 @@ module "object_error" {
 
 module "ota_iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version = "~> 5.0"
+  version = "~> 6.4"
 
   name = "${local.prefix_name}-ota-upload"
 
