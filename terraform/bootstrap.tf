@@ -51,7 +51,7 @@ module "s3_bucket" {
 
 module "dynamodb_table" {
   source  = "terraform-aws-modules/dynamodb-table/aws"
-  version = "~> 3.0"
+  version = "~> 5.5"
 
   name     = "${local.bucket_name}-lock"
   hash_key = "LockID"
