@@ -2,7 +2,7 @@ module "iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "~> 6.4"
 
-  name = "${local.bucket_name}-user"
+  name = "${local.repo_name}-user"
 
   create_access_key    = true
   create_login_profile = false
@@ -37,19 +37,6 @@ data "aws_iam_policy_document" "terraform_base" {
   }
 
   statement {
-    sid = "AllowDynamoDBLocking"
-    actions = [
-      "dynamodb:List*",
-      "dynamodb:Get*",
-      "dynamodb:PutItem",
-      "dynamodb:DeleteItem",
-      "dynamodb:Describe*"
-    ]
-    effect    = "Allow"
-    resources = [module.dynamodb_table.dynamodb_table_arn]
-  }
-
-  statement {
     sid = "AllowS3ListBuckets"
     actions = [
       "s3:ListAllMyBuckets"
@@ -57,8 +44,6 @@ data "aws_iam_policy_document" "terraform_base" {
     effect    = "Allow"
     resources = ["*"]
   }
-
-
 
   statement {
     sid = "AllowIAMRead"
@@ -97,7 +82,7 @@ module "iam_user_apply" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "~> 6.4"
 
-  name = "${local.bucket_name}-user-apply"
+  name = "${local.repo_name}-user-apply"
 
   create_access_key    = true
   create_login_profile = false
@@ -152,20 +137,6 @@ data "aws_iam_policy_document" "terraform_apply" {
       "arn:aws:lambda:*:*:function:${local.prefix_name}-*"
     ]
   }
-
-  statement {
-    sid = "AllowDynamoDBWrite"
-    actions = [
-      "dynamodb:TagResource",
-      "dynamodb:UntagResource"
-    ]
-    effect = "Allow"
-    resources = [
-      module.dynamodb_table.dynamodb_table_arn
-    ]
-  }
-
-
 }
 
 data "aws_iam_policy_document" "terraform_apply_combined" {
